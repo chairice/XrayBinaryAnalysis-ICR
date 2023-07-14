@@ -23,7 +23,7 @@ print('Size of y points list: ', len(y_points), y_points.shape)
 print(y_points[0].shape)
 
 # create plot
-plt.scatter(x_points, y_points)
+plt.plot(x_points, y_points)
 plt.xlabel('TIME')
 plt.ylabel('COUNTS')
 plt.axis([5.3195e8, 5.32125e8, 0, 300])
