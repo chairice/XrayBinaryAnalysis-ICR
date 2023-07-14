@@ -1,0 +1,28 @@
+# setup
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy.io import fits
+
+# open files and print out information
+hdul = fits.open('/home/chairice/Desktop/Casey_ICR_Research/00059158012/bat/rate/sw00059158012brtms.lc')
+plot_data = hdul[1].data
+print(plot_data.columns)
+table_info = plot_data
+print(table_info)
+
+# creating the figure
+# assign time column to x; TODO: multiply each by 4
+x_points = np.array(plot_data['TIME'])
+print(np.array(x_points).argmax())
+print(np.array(x_points).argmin())
+# append flattened count column y
+y_points = np.array(plot_data['COUNTS'])
+print(np.array(y_points).argmax())
+print(np.array(y_points).argmin())
+
+# create plot
+plt.plot(x_points, y_points)
+plt.xlabel('TIME')
+plt.ylabel('COUNTS')
+plt.axis([531800000, 532200000, 0, 300])
+plt.show()
