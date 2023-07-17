@@ -18,9 +18,17 @@ y_points = np.array(plot_data['COUNTS'])
 print('Size of y points list: ', len(y_points), y_points.shape)
 print(y_points.shape)
 
+#rates = np.zeros(shape=(x_points, 4))
+#for x in y_points[0]:
+#    y_points[x] = [y_points(]
+    
+
 # create plots
 plt.subplot(2,1,1)
-plt.plot(x_points, y_points)
+plt.plot(x_points, y_points, '.')
+# y_error = 5
+# plt.errorbar(x_points, y_points, yerr = y_error, fmt ='o')
+
 
 # legend: energy bands found https://www.swift.ac.uk/analysis/bat/lc.php
 location = 0 # For the best location
@@ -31,10 +39,11 @@ plt.xlabel('TIME')
 plt.ylabel('COUNTS')
 plt.axis([5.3195e8, 5.32125e8, 30, 700])
 
+# work in progress: dividing all points by seconds to get the rate (counts/sec)
 plt.subplot(2,1,2)
 plt.scatter(x_points, y_points[:,0])
 plt.xlabel('TIME')
-plt.ylabel('COUNTS')
+plt.ylabel('RATE')
 plt.axis([5.3195e8, 5.32125e8, 50, 700])
 
 plt.show()
