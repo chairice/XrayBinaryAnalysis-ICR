@@ -23,27 +23,23 @@ print(y_points.shape)
 #    y_points[x] = [y_points(]
     
 
-# create plots
+# plot 1: split by energy bands
 plt.subplot(2,1,1)
 plt.plot(x_points, y_points, '.')
-# y_error = 5
-# plt.errorbar(x_points, y_points, yerr = y_error, fmt ='o')
-
-
-# legend: energy bands found https://www.swift.ac.uk/analysis/bat/lc.php
-location = 0 # For the best location
-legend_drawn_flag = True
-plt.legend(["100-350 keV", "50-100 keV", "25-50 keV", "15-25 keV"], loc=0, frameon=legend_drawn_flag)
-
 plt.xlabel('TIME')
 plt.ylabel('COUNTS')
 plt.axis([5.3195e8, 5.32125e8, 30, 700])
 
-# work in progress: dividing all points by seconds to get the rate (counts/sec)
+# legend: energy bands found https://www.swift.ac.uk/analysis/bat/lc.php
+location = 0 # For the best location
+legend_drawn_flag = True
+plt.legend(["15-25 keV", "25-50 keV", "50-100 keV", "100-350 keV"], loc=0, frameon=legend_drawn_flag)
+
+# plot 2: counts vs. time for 15-50 keV energy bands
 plt.subplot(2,1,2)
-plt.scatter(x_points, y_points[:,0])
+plt.scatter(x_points, y_points[:,0]+y_points[:,1])
 plt.xlabel('TIME')
-plt.ylabel('RATE')
-plt.axis([5.3195e8, 5.32125e8, 50, 700])
+plt.ylabel('COUNTS')
+plt.axis([5.3195e8, 5.32125e8, 100, 1050])
 
 plt.show()
