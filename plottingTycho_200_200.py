@@ -24,22 +24,29 @@ print(y_points.shape)
     
 
 # plot 1: split by energy bands
-plt.subplot(2,1,1)
-plt.plot(x_points, y_points, '.')
+plot1 = plt.subplot(2,1,1)
+plot1.plot(x_points, y_points, '.')
 plt.xlabel('TIME')
 plt.ylabel('COUNTS')
-plt.axis([5.3195e8, 5.32125e8, 30, 700])
+plot1.axis([5.3195e8, 5.32125e8, 30, 700])
 
 # legend: energy bands found https://www.swift.ac.uk/analysis/bat/lc.php
-location = 0 # For the best location
 legend_drawn_flag = True
-plt.legend(["15-25 keV", "25-50 keV", "50-100 keV", "100-350 keV"], loc=0, frameon=legend_drawn_flag)
+plot1.legend(["15-25 keV", "25-50 keV", "50-100 keV", "100-350 keV"], loc=0, frameon=legend_drawn_flag)
 
 # plot 2: counts vs. time for 15-50 keV energy bands
-plt.subplot(2,1,2)
-plt.scatter(x_points, y_points[:,0]+y_points[:,1])
+plot2 = plt.subplot(2,1,2)
+plot2.scatter(x_points, y_points[:,0]+y_points[:,1])
 plt.xlabel('TIME')
 plt.ylabel('COUNTS')
-plt.axis([5.3195e8, 5.32125e8, 100, 1050])
+plot2.axis([5.3195e8, 5.32125e8, 100, 1050])
+
+# plot 3: my version of counts vs. time for 15-50 keV energy bands
+plot3 = plt.subplot(2,1,2)
+plot3.scatter(x_points, y_points[:,0])
+plot3.scatter(x_points, y_points[:,1])
+plt.xlabel('TIME')
+plt.ylabel('COUNTS')
+plot3.axis([5.3195e8, 5.32125e8, 100, 1050])
 
 plt.show()
