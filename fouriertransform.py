@@ -24,14 +24,15 @@ allsegs = np.array([np.array(list()) for segments in np.split(data, splitlocs)])
 for datasegment in np.split(data, splitlocs):
     starttime = swiftbat.met2datetime(datasegment['TIME'][0]) # time of spacecraft, not always accurate because of clock error
     duration = datasegment['TIME'].ptp()
-    print(f"{starttime:%Y-%m-%dT%H:%M:%S} + {duration:5.0f} seconds to the end of the block")
+    print(f"{starttime:%Y-%m-%dT%H:%M:%S} + {duration:5.10f} seconds to the end of the block")
     if duration > 1300:
+    # if duration > 417 and duration < 418:
     # if duration < 400:
         longdatasegment = datasegment
         # TODO: check if this is the longest data segment
 
-allsegs = np.array(allsegs)        
-        
+# allsegs = np.array(allsegs)        
+    
 # lower number for FFT
 def prev_fast_FFT_len(n):
     ntry = n
@@ -110,30 +111,38 @@ axr.set(xlabel="Seconds", ylabel="Rate", xlim = [0,20])
 fig.tight_layout()
 '''
 
+# adjusting work
 tzero = swiftbat.string2met('2017-11-01T00:00:00')
 print(tzero)
 fapprox = 0.1019 # + divide .005 by seconds between each time chunk (1000 data points apart)
-rate = np.sum(datasegment['COUNTS'][:,0:2], axis=-1)/tb
 cycle, phase = np.divmod((datasegment['TIME']-tzero) * fapprox, 1) # spin angle of a specific point, seconds since tzero
 fig, axes = plt.subplots(nrows = 2, ncols = 1, sharex = True)
-print(len(phase), len(rate))
 
 # plotting just the 1300s segment
-for i in range(4):
-    axes[0].plot(phase[1000*i:1000+1000*i], rate[1000*i:1000*i+1000], ".") # rate = brightness
-    print(phase[1000*i])
-axes[0].set(xlabel="Phase (in cycles)", ylabel="Rate (brightness)")
-axes[0].set_title(f'{fapprox}')
+rate = np.sum(datasegment['COUNTS'][:,0:2], axis=-1)/tb
+print(len(phase), len(rate))
+print(len(datasegment))
 
-# break the segment into 4 pieces
-for segs in allsegs:
-    segpieces = 4
-    pointsperplot = 2 * int(1/(0.064 * fapprox))
-    # for each segment, plot 2 cycles of data
-    for istart in np.arange(0, len(segs), 1 + len(segs) // segpieces):
-        sl = slice(istart, istart + pointsperplot)
-        axes[1].plot(phase[sl], rate[sl], ".", label=f"{datasegment['time'][sl.start] - tzero:.0f}") 
+segpieces = 4
+# Break the segment into 4 pieces
+pointsperplot = 2 * int(1/(0.064 * fapprox))
+# For each segment, plot 2 cycles of data
+for istart in np.arange(0, len(datasegment), 1 + len(datasegment)//segpieces):
+    sl = slice(istart, istart+pointsperplot)
+    axes[0].plot(phase[sl], rate[sl], ".", label=f"{datasegment[sl.start]['time'] - tzero:.0f}") 
+axes[0].legend()
+axes[0].set_title(f"{fapprox}")
 
+for datasegment in np.split(data, splitlocs):
+    n = prev_fast_FFT_len(len(datasegment) - int(60 / tb))
+    datasegment = datasegment[-n:]
+    duration = datasegment['TIME'].ptp()
+    print(f"{duration:.3f} seconds after trimming")
+    segrate = np.sum(datasegment['COUNTS'][:,0:2], axis=-1)/tb
+    segcycle, segphase = np.divmod((datasegment['TIME']-tzero) * fapprox, 1)
+    print(len(datasegment))
+    axes[1].plot(segphase[0:3675], segrate[0:3675], ".") 
+    
 axes[1].legend()
 axes[1].set_title("")
     
