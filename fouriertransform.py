@@ -13,25 +13,17 @@ obsid="00059158012"
 filename = list(pathname.joinpath(obsid).glob(mspattern))[0]
 data, header = fits.getdata(filename,  header=True)
 tb = np.median(np.diff(data['TIME']))    # size of the timebin (ignoring jumps)
-# print(header)
-# print(data)
-# print(tb)
 
 # splitting the data by time gaps
 splitlocs = np.argwhere(np.diff(data['TIME']) > 1.5*tb).ravel() + 1 # gives index of the next time block
-allsegs = np.array([np.array(list()) for segments in np.split(data, splitlocs)])
 
 for datasegment in np.split(data, splitlocs):
     starttime = swiftbat.met2datetime(datasegment['TIME'][0]) # time of spacecraft, not always accurate because of clock error
     duration = datasegment['TIME'].ptp()
     print(f"{starttime:%Y-%m-%dT%H:%M:%S} + {duration:5.10f} seconds to the end of the block")
     if duration > 1300:
-    # if duration > 417 and duration < 418:
-    # if duration < 400:
         longdatasegment = datasegment
-        # TODO: check if this is the longest data segment
-
-# allsegs = np.array(allsegs)        
+        # TODO: check if this is the longest data segment       
     
 # lower number for FFT
 def prev_fast_FFT_len(n):
@@ -70,12 +62,11 @@ freqs = sp.fft.rfftfreq(len(rate), tb)
 for i in range(10,20):
     print(frate[i],freqs[i])
 
-'''
 fig,ax = plt.subplots(1,1)
 ax.plot(freqs, np.abs(frate))
 ax.set(xlabel="Frequency (Hz)", ylabel="Amplitude")
+ax.set_title("Fourier Transform of Longest Data Segment")
 fig.tight_layout()
-'''
 
 # Forward (time series->frequency) FFT for real input
 # Subtract the mean to avoid a huge term at 0 frequency
@@ -88,7 +79,6 @@ invrate = sp.fft.irfft(frate, norm = "forward")
 #for i in range(10,20):
 #    print(frate[i],freqs[i])
 times = np.arange(len(rate)) * tb
-
 
 estrate = np.zeros(len(rate))
 # component amplitude * 2 is generally how far away from the curve the data points are
@@ -131,8 +121,9 @@ for istart in np.arange(0, len(datasegment), 1 + len(datasegment)//segpieces):
     sl = slice(istart, istart+pointsperplot)
     axes[0].plot(phase[sl], rate[sl], ".", label=f"{datasegment[sl.start]['time'] - tzero:.0f}") 
 axes[0].legend()
-axes[0].set_title(f"{fapprox}")
+axes[0].set_title(f"For Longest Segment: Change in Rate Over a Phase with Freq of {fapprox} Hz")
 
+# 1 cycle of data for all 11 data segments
 for datasegment in np.split(data, splitlocs):
     n = prev_fast_FFT_len(len(datasegment) - int(60 / tb))
     datasegment = datasegment[-n:]
@@ -144,7 +135,7 @@ for datasegment in np.split(data, splitlocs):
     axes[1].plot(segphase[0:3675], segrate[0:3675], ".") 
     
 axes[1].legend()
-axes[1].set_title("")
+axes[1].set_title(f"For All 11 segments: Change in Rate Over a Phase with Freq of {fapprox} Hz")
     
 fig.tight_layout()
 
