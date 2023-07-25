@@ -104,7 +104,7 @@ fig.tight_layout()
 # adjusting work
 tzero = swiftbat.string2met('2017-11-01T00:00:00')
 print(tzero)
-fapprox = 0.1019 # + divide .005 by seconds between each time chunk (1000 data points apart)
+fapprox = 0.10185
 cycle, phase = np.divmod((datasegment['TIME']-tzero) * fapprox, 1) # spin angle of a specific point, seconds since tzero
 fig, axes = plt.subplots(nrows = 2, ncols = 1, sharex = True)
 
