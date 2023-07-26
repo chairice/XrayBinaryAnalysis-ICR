@@ -10,7 +10,7 @@ import glob
 mspattern ="bat/rate/sw*brtms.lc.gz"
 pathname = Path("/opt/data/mirror/swift")
 file = open("FFT.txt","w")
-file.write("Data_Pt.  Freq    Amplitude Phase_Angle \n")
+# file.write("Data_Pt.  Freq    Amplitude Phase_Angle \n")
 
 print(f'{pathname}*{mspattern}')
 datafiles = sorted(glob.glob('/opt/data/mirror/swift/*/bat/rate/sw*brtms.lc.gz'))
@@ -26,6 +26,8 @@ def prev_fast_FFT_len(n):
         nfft = sp.fft.next_fast_len(ntry)
     return nfft
 
+# main list of data
+alldata = []
 
 for f in datafiles:
     data, header = fits.getdata(f,  header=True)
@@ -62,17 +64,19 @@ for f in datafiles:
 
     # Save FFT results into txt file
     for i in ibest[:ncomponents]:
-        file.write(f"{i:7d} {freqs[i]:8.4f} {np.abs(frate[i]):10.4f} {np.rad2deg(np.angle(frate[i])):5.5f} \n")
-
+        templist = [f"{i}", f"{freqs[i]}", f"{np.abs(frate[i])}", f"{np.rad2deg(np.angle(frate[i]))}"]
+        # alldata.append(templist)
+        file.write(f"{templist}")
+        file.write("\n")
+        # file.write(f"{i:7d} {freqs[i]:8.4f} {np.abs(frate[i]):10.4f} {np.rad2deg(np.angle(frate[i])):5.5f} \n")
 
 file.close()
-'''
-fig,ax = plt.subplots(1,1)
-ax.plot(freqs, np.abs(frate))
-ax.set(xlabel="Frequency (Hz)", ylabel="Amplitude")
-ax.set_title("Fourier Transform of Longest Data Segment")
-fig.tight_layout()
-'''
 
-# plt.show()
+# Using for loop
+lines = []
+with open('FFT.txt', 'r') as f:
+    for line in f:
+        lines.append(line.strip())
+
+# print(lines)
 
