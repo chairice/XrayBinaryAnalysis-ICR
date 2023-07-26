@@ -170,7 +170,7 @@ segpieces = 4
 pointsperplot = 2 * int(1/(0.064 * fapprox))
 # For each segment, plot 2 cycles of data
 
-# 1 cycle of data for all 11 data segments
+# 2 cycles of data for all 11 data segments
 for datasegment, ax in zip(np.split(data, splitlocs), axes):
     n = prev_fast_FFT_len(len(datasegment) - int(60 / tb))
     datasegment = datasegment[-n:]
