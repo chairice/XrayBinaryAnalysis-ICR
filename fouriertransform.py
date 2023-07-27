@@ -8,7 +8,7 @@ import swiftbat
 #setup
 mspattern ="bat/rate/sw*brtms.lc.gz"
 pathname = Path("/opt/data/mirror/swift")
-obsid="00059158012"
+obsid="00010328003"
 
 filename = list(pathname.joinpath(obsid).glob(mspattern))[0]
 data, header = fits.getdata(filename,  header=True)

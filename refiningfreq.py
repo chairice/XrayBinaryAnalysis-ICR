@@ -45,26 +45,24 @@ for f in datafiles:
         duration = datasegment['TIME'].ptp()
         # print(f"{starttime:%Y-%m-%dT%H:%M:%S} + {duration:5.10f} s after trimming")
 
-    # Rate for the segment
-    rate = np.sum(datasegment['COUNTS'][:,0:2], axis=-1)/tb
+        # Rate for the segment
+        rate = np.sum(datasegment['COUNTS'][:,0:2], axis=-1)/tb
 
-    # subtracting the mean makes it easier to see variations instead of just average
-    frate = sp.fft.rfft(rate - np.mean(rate), norm = "forward")
-    # not transformed, used as reference for interpreting FFTs
-    freqs = sp.fft.rfftfreq(len(rate), tb)
-
-    # component amplitude * 2 is generally how far away from the curve the data points are
-    ibest = np.argsort(np.abs(frate))[::-1]
-    ncomponents = 3
-    # sort from lowest to highest and then flip array
+        # subtracting the mean makes it easier to see variations instead of just average
+        frate = sp.fft.rfft(rate - np.mean(rate), norm = "forward")
+        # not transformed, used as reference for interpreting FFTs
+        freqs = sp.fft.rfftfreq(len(rate), tb)
     
-    # Oddly different shapes??
-    # print(frate)
-    # print(freqs.shape)
-    # print((datasegment['TIME']).shape)
-    # Save FFT results into txt file
-    for i in ibest[:ncomponents]:
-        file.write(f"{datasegment['TIME'][i] - tzero} {freqs[i]} {np.abs(frate[i])} \n")
+        # component amplitude * 2 is generally how far away from the curve the data points are
+        ibest = np.argsort(np.abs(frate))[::-1]
+        ncomponents = 1
+        # sort from lowest to highest and then flip array
+    
+        # Save FFT results into txt file
+        # the time at the midpoint because FFT returns n/2 frequencies
+        tmid = datasegment['TIME'][len(datasegment)// 2] - tzero
+        for i in ibest[:ncomponents]:
+            file.write(f"{tmid} {freqs[i]} {np.abs(frate[i])} \n")
 
 file.close()
 timelist = []
@@ -96,6 +94,6 @@ print(freqlist[:ncomponents])
 
 fig, ax = plt.subplots(nrows = 1, ncols = 1)
 ax.plot(timelist, freqlist, ".")
-ax.set(xlabel = "TIME", ylabel = "FREQUENCIES")
+ax.set(xlabel = "TIME (seconds)", ylabel = "FREQUENCIES (Hz)")
 fig.tight_layout()
 plt.show()
