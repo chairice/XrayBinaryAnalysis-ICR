@@ -55,7 +55,7 @@ for f in datafiles:
 
     # component amplitude * 2 is generally how far away from the curve the data points are
     ibest = np.argsort(np.abs(frate))[::-1]
-    ncomponents = 10
+    ncomponents = 3
     # sort from lowest to highest and then flip array
     
     # Oddly different shapes??
@@ -63,29 +63,36 @@ for f in datafiles:
     # print(freqs.shape)
     # print((datasegment['TIME']).shape)
     # Save FFT results into txt file
-
-    # use x for unsorted, i for sorted
-    for x, i in zip(range(ncomponents), ibest[:ncomponents]):
-        # file.write(f"{i:7d} {freqs[i]:8.4f} {np.abs(frate[i]):10.4f} {np.rad2deg(np.angle(frate[i])):5.5f} \n")
-        # print(freqs[i])
-        file.write(f"{datasegment['TIME'][x] - tzero} {freqs[x]} {np.abs(frate[x])} {np.rad2deg(np.angle(frate[x]))} \n")
+    for i in ibest[:ncomponents]:
+        file.write(f"{datasegment['TIME'][i] - tzero} {freqs[i]} {np.abs(frate[i])} \n")
 
 file.close()
 timelist = []
 freqlist = []
+amplist = []
 
-
-f = open('FFT.txt', 'r')  # We need to re-open the file
+# Reopen file to add time and freqs to a list
+f = open('FFT.txt', 'r')
 for line in f:
     line = line.strip()
     columns = line.split()
     time  = float(columns[0])
     frequency = float(columns[1])
+    amps = float(columns[2])
+    amplist.append(amps)
     timelist.append(time)
     freqlist.append(frequency)
+    
+'''
+bestfreq = np.argsort(amplist)[::-1]
 
-# print(timelist)
-# print(freqlist)
+for x, i in zip(range(len(freqlist)), bestfreq):
+    timelist[x] = timelist[bestfreq[i]]
+    freqlist[x] = freqlist[bestfreq[i]]
+
+print(timelist[:ncomponents])
+print(freqlist[:ncomponents])
+'''
 
 fig, ax = plt.subplots(nrows = 1, ncols = 1)
 ax.plot(timelist, freqlist, ".")
