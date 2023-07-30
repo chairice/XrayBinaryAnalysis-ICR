@@ -60,9 +60,14 @@ for f in datafiles:
     
         # Save FFT results into txt file
         # the time at the midpoint because FFT returns n/2 frequencies
-        tmid = datasegment['TIME'][len(datasegment)// 2] - tzero
+        tmid = datasegment['TIME'][len(datasegment)// 2] - tzero # how does moving this to the midddle change the accuracy of the data?
         for i in ibest[:ncomponents]:
-            file.write(f"{tmid} {freqs[i]} {np.abs(frate[i])} \n")
+            freq = freqs[i]
+            if 0.2 < freq < 0.24:
+                freq = freq/2
+            if 0.1 < freq < 0.12:
+                file.write(f"{tmid:7.3f} {freq:0.5f} {np.abs(frate[i]):3.4f} \n")
+                break
 
 file.close()
 timelist = []

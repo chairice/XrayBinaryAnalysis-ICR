@@ -42,17 +42,7 @@ import warnings
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    result = ba.download_swiftdata(table_exposed, auxil=False, match=['*brtms*'], quiet=True)
-result
-
-# %%
-
-# Quicklook=True is needed? to get quicklook data
-result=ba.download_swiftdata(16011066, auxil=False, match=['*ben*']) #, quicklook=True)
-result
-
-# %%
-result=ba.download_swiftdata(9328804, auxil=False, match=['*ben*'])
+    result = ba.download_swiftdata(table_exposed, auxil=True, match=['*brtms*', '*sao.fits*'], quiet=True)
 result
 
 # %%
