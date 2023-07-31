@@ -2,7 +2,7 @@
 Repository for the project from the Institude for Computing in Research --- Analysis of Swift J0243.6+6124
 
 ## Background
-...
+The Swift J0243.6+6124 Xray binary neutron star is currently in outburst, making its Xray emissions and pulses clear enough to determine its current spin frequency. This project aims to analyze changes in spin frequency of when the neutron star is in outburst— the time of its discovery and now— and compare it to changes in brightness. The project includes collecting data from Swift archives, correcting the data from the orbit of the BAT telescope around Earth to its barycenter, and plotting out the results.
 
 ## Getting Started
 
