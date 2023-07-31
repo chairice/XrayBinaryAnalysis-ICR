@@ -10,7 +10,7 @@ import glob
 timecolname = 'BARYTIME'
 mspattern ="j024_bary/*.bary" 
 pathname = Path("/opt/data/mirror/swift")
-freqfile = open("/home/chairice/ICR-research/barydayfreq.txt","wt")
+freqfile = open("/home/chairice/IXrayBinaryAnalysis-ICR/barydayfreq.txt","wt")
 
 tzero = swiftbat.string2met('2017-09-26T00:00:00')
 tfirst = tzero

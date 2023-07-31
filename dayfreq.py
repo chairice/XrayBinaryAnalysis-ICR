@@ -9,7 +9,7 @@ import glob
 #setup
 mspattern ="*/bat/rate/sw*brtms.lc.gz"
 pathname = Path("/opt/data/mirror/swift")
-freqfile = open("/home/chairice/ICR-research/dayfreq.txt","wt")
+freqfile = open("/home/chairice/XrayBinaryAnalysis-ICR/dayfreq.txt","wt")
 
 tzero = swiftbat.string2met('2017-09-26T00:00:00')
 tfirst = tzero
@@ -89,37 +89,3 @@ for tzeroday in np.arange(tfirst, tlast, npointsday * tb / 2):
 
 
 freqfile.close()
-'''
-timelist = []
-freqlist = []
-amplist = []
-
-# Reopen file to add time and freqs to a list
-f = open('FFT.txt', 'r')
-for line in f:
-    line = line.strip()
-    columns = line.split()
-    time  = float(columns[0])
-    frequency = float(columns[1])
-    amps = float(columns[2])
-    amplist.append(amps)
-    timelist.append(time)
-    freqlist.append(frequency)
-    
-
-bestfreq = np.argsort(amplist)[::-1]
-
-for x, i in zip(range(len(freqlist)), bestfreq):
-    timelist[x] = timelist[bestfreq[i]]
-    freqlist[x] = freqlist[bestfreq[i]]
-
-print(timelist[:ncomponents])
-print(freqlist[:ncomponents])
-
-
-fig, ax = plt.subplots(nrows = 1, ncols = 1)
-ax.plot(timelist, freqlist, ".")
-ax.set(xlabel = "TIME (seconds)", ylabel = "FREQUENCIES (Hz)")
-fig.tight_layout()
-plt.show()
-'''
