@@ -50,3 +50,8 @@ then
 cat barydayfreq.txt
 ```
 or use another text editor to view the txt file. 
+
+To view the comparison plot between the corrected data and original collected data, do: 
+```
+python3 freqcomparisonplot.py
+```
