@@ -8,7 +8,7 @@ import swiftbat
 #setup
 mspattern ="bat/rate/sw*brtms.lc.gz"
 pathname = Path("/opt/data/mirror/swift")
-obsid="00010328003"
+obsid="00059158012"
 
 filename = list(pathname.joinpath(obsid).glob(mspattern))[0]
 data, header = fits.getdata(filename,  header=True)
@@ -39,7 +39,7 @@ def prev_fast_FFT_len(n):
 # refind the amount of datapoints afte cutting off the first minute (BAT is still adjusting the first min)
 n = prev_fast_FFT_len(len(longdatasegment) - int(60 / tb))
 
-# Trim to the last n values
+# Trim to the last n valuesfits.getdata(filename,  header=True)
 datasegment = longdatasegment[-n:]
 duration = datasegment['TIME'].ptp()
 print(f"{duration:.3f} seconds after trimming")

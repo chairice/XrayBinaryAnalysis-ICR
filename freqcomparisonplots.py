@@ -6,6 +6,8 @@ listfiles = ['dayfreq.txt','barydayfreq.txt']
 fig, axes = plt.subplots(nrows = 1, ncols = 1)
 ax = axes
 
+# plot FFT for all data with barycentered data and original data
+
 for file in listfiles:
     timelist = []
     freqlist = []
