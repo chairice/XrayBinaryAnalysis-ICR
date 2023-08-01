@@ -20,52 +20,46 @@ fdata = fdata[2].data
 print(len(fdata['BARYTIME']))
 pass
 
+print(len(sdata['RATE']))
+print(len(fdata['AMPLITUDE']))
+
+#i_f_s gives indices for fdata that match to sdata
+i_f_s = np.searchsorted(sdata['TIME'], fdata['BARYTIME'])
+sdata['RATE'] = sdata['RATE'][i_f_s]
+sdata['TIME'] = sdata['TIME'][i_f_s]
+# fdata['BARYTIME'][i_f_s]
+# sdata['TIME']
+                        
 ratechangefreqs = []
-ratechangesflux = []
-ratechangefflux = []
 ftimes = []
-fmidtimes = []
-# smidtimes = []
 
 for i in np.arange(0, len(fdata['BARYTIME']) - 1):
     # get rate of change in frequency
-    changeftime = fdata['BARYTIME'][i+1] - fdata['BARYTIME'][i]
-    changeffreq = fdata['FREQUENCY'][i+1] - fdata['FREQUENCY'][i]
-    ratefchange = changeffreq / changeftime
-    ratechangefreqs.append(ratefchange)
+    changetime = fdata['BARYTIME'][i+1] - fdata['BARYTIME'][i]
+    changefreq = fdata['FREQUENCY'][i+1] - fdata['FREQUENCY'][i]
+    ratefreqchange = changefreq / changetime
+    ratechangefreqs.append(ratefreqchange)
+    ftimes.append(changetime)
 
-    changestime = sdata['TIME'][i+1] - sdata['TIME'][i]
-    changesfreq = sdata['RATE'][i+1] - sdata['RATE'][i]
-    rateschange = changesfreq / changestime
-    ratechangesflux.append(rateschange)
+# ffluxoverfreq = []
+# sfluxoverfreq = []
 
-    # get rate of change in flux
-    changeflux = fdata['AMPLITUDE'][i+1] - fdata['AMPLITUDE'][i]
-    rateflux = changeflux / changeftime
-    ratechangefflux.append(rateflux)
-    ftimes.append(changeftime)
-    fmidtimes.append(fdata['BARYTIME'][i] + changeftime / 2)
-    # smidtimes.append(sdata['TIME'][i] + changestime / 2)
-
-print(len(smidtimes))
-pass
-
-ffluxoverfreq = []
-sfluxoverfreq = []
-
-for i in np.arange(0,249):
-    ffluxoverfreq.append(ratechangefflux[i] / ratechangefreqs[i]) 
-    sfluxoverfreq.append(ratechangesflux[i] / ratechangefreqs[i])
+# for i in np.arange(0,249):
+#     ffluxoverfreq.append(ratechangefflux[i] / ratechangefreqs[i]) 
+#     sfluxoverfreq.append(ratechangesflux[i] / ratechangefreqs[i])
 
 
 fig, axes = plt.subplots(nrows = 2, ncols = 1)
-axes[0].plot(ratechangefreqs, ratechangefflux, ".")
-axes[0].plot(ratechangefreqs, ratechangesflux, ".")
-axes[1].plot(fmidtimes, ffluxoverfreq, ".")
-axes[1].plot(fmidtimes, sfluxoverfreq, ".")
+axes[0].plot(fdata['AMPLITUDE'], sdata['RATE'], ".")
+#find line of best fit
+a, b = np.polyfit(fdata['AMPLITUDE'], sdata['RATE'], 1)
+axes[0].plot(fdata['AMPLITUDE'], a*fdata['AMPLITUDE']+b)  
+print(a)
+axes[0].set(xlabel = 'Flux Fermi', ylabel = 'Flux Swift')
+axes[0].legend(['Slope: a'])
 
-axes[0].set(xlabel = 'Change in Frequency', ylabel = 'Change in Flux')
-axes[0].legend(['fdata', 'sdata'])
+axes[1].plot(ratechangefreqs, ratechangefflux, ".")
+axes[1].plot(ratechangefreqs, ratechangesflux, ".")
 axes[1].set(ylabel = 'Change in Flux over Change in Frequency', xlabel = 'Time')
 
 plt.show()
