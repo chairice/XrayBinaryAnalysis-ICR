@@ -18,48 +18,39 @@ tzero = swiftbat.met2mjd(swiftbat.string2met('2017-09-04T00:00:00'))
 print(tzero)
 fdata = fdata[2].data
 print(len(fdata['BARYTIME']))
-pass
 
-print(len(sdata['RATE']))
-print(len(fdata['AMPLITUDE']))
-
+fmidt = (fdata['BARYTIME'][:-1] + fdata['BARYTIME'][1:]) / 2
 #i_f_s gives indices for fdata that match to sdata
-i_f_s = np.searchsorted(sdata['TIME'], fdata['BARYTIME'])
-sdata['RATE'] = sdata['RATE'][i_f_s]
-sdata['TIME'] = sdata['TIME'][i_f_s]
-# fdata['BARYTIME'][i_f_s]
-# sdata['TIME']
-                        
-ratechangefreqs = []
-ftimes = []
+i_f_s = np.searchsorted(sdata['TIME'], fmidt)
+sdataflux = sdata['RATE'][i_f_s]
+sdatatime = sdata['TIME'][i_f_s]
 
-for i in np.arange(0, len(fdata['BARYTIME']) - 1):
-    # get rate of change in frequency
-    changetime = fdata['BARYTIME'][i+1] - fdata['BARYTIME'][i]
-    changefreq = fdata['FREQUENCY'][i+1] - fdata['FREQUENCY'][i]
-    ratefreqchange = changefreq / changetime
-    ratechangefreqs.append(ratefreqchange)
-    ftimes.append(changetime)
+changeftime = np.diff(fdata['BARYTIME'])
+changefreqs = np.diff(fdata['FREQUENCY']) / changeftime
 
-# ffluxoverfreq = []
-# sfluxoverfreq = []
+# freq_diff 
+freq_diff = np.searchsorted(fdata['BARYTIME'], fmidt)
+fdataflux = fdata['AMPLITUDE'][freq_diff]
+shiftfdataflux = fdataflux * 0.04133440433120353
 
-# for i in np.arange(0,249):
-#     ffluxoverfreq.append(ratechangefflux[i] / ratechangefreqs[i]) 
-#     sfluxoverfreq.append(ratechangesflux[i] / ratechangefreqs[i])
-
+print(len(fmidt))
+print(len(sdataflux), len(fdataflux))
+print(len(changefreqs), len(changeftime))
 
 fig, axes = plt.subplots(nrows = 2, ncols = 1)
-axes[0].plot(fdata['AMPLITUDE'], sdata['RATE'], ".")
-#find line of best fit
-a, b = np.polyfit(fdata['AMPLITUDE'], sdata['RATE'], 1)
-axes[0].plot(fdata['AMPLITUDE'], a*fdata['AMPLITUDE']+b)  
-print(a)
+# plot Fermi Flux by Swift Flux
+axes[0].plot(fdataflux, sdataflux, ".")
+# find line of best fit
+a, b = np.polyfit(fdataflux, sdataflux, 1)
+axes[0].plot(fdataflux, a*fdataflux+b)  
 axes[0].set(xlabel = 'Flux Fermi', ylabel = 'Flux Swift')
-axes[0].legend(['Slope: a'])
+axes[0].legend([f"Slope: {a}"])
 
-axes[1].plot(ratechangefreqs, ratechangefflux, ".")
-axes[1].plot(ratechangefreqs, ratechangesflux, ".")
-axes[1].set(ylabel = 'Change in Flux over Change in Frequency', xlabel = 'Time')
+# plot freq vs Fermi flux and freq vs Swift flux
+axes[1].plot(changefreqs, sdataflux, ".")
+# axes[1].plot(changefreqs, fdataflux, ".")
+axes[1].plot(changefreqs, shiftfdataflux, ".")
+axes[1].set(xlabel = 'Rate of Change in Frequency', ylabel = 'Flux')
+axes[1].legend(['Swift', 'Fermi * slope'])
 
 plt.show()
