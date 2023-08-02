@@ -31,26 +31,75 @@ changefreqs = np.diff(fdata['FREQUENCY']) / changeftime
 # freq_diff 
 freq_diff = np.searchsorted(fdata['BARYTIME'], fmidt)
 fdataflux = fdata['AMPLITUDE'][freq_diff]
-shiftfdataflux = fdataflux * 0.04133440433120353
 
-print(len(fmidt))
-print(len(sdataflux), len(fdataflux))
-print(len(changefreqs), len(changeftime))
+'''
+for i in range(len(fdataflux)):
+    if fdataflux[i] > 7:
+        print(i)
+'''
+
+pass
+
 
 fig, axes = plt.subplots(nrows = 2, ncols = 1)
 # plot Fermi Flux by Swift Flux
 axes[0].plot(fdataflux, sdataflux, ".")
 # find line of best fit
-a, b = np.polyfit(fdataflux, sdataflux, 1)
+a, b = np.polyfit(fdataflux[:19], sdataflux[:19], 1)
+c, d = np.polyfit(fdataflux[19:64], sdataflux[19:64], 1)
 axes[0].plot(fdataflux, a*fdataflux+b)  
+axes[0].plot(fdataflux, c*fdataflux+d)  
 axes[0].set(xlabel = 'Flux Fermi', ylabel = 'Flux Swift')
-axes[0].legend([f"Slope: {a}"])
+axes[0].legend([f"Slope: {a},{c}"])
+
+# fdataflux = fdataflux * 0.04133440433120353
+
+for flux in fdataflux:
+    if flux < 7:
+        flux = flux * a
+    else:
+        flux = flux * c
+A = []
+B = []
+C = []
+D = []
+E = []
+
+# get indices of <58065, 58140, 58460, 58600, then 60000
+for i in np.arange(0, len(fmidt)):
+    if fmidt[i] < 58065:
+        A.append(i)
+    if fmidt[i] >= 58065 and fmidt[i] < 58140:
+        B.append(i)
+    if fmidt[i] >= 58140 and fmidt[i] < 58460:
+        C.append(i)
+    if fmidt[i] >= 58460 and fmidt[i] < 58600:
+        D.append(i)
+    if fmidt[i] > 60000:
+        E.append(i)
 
 # plot freq vs Fermi flux and freq vs Swift flux
 axes[1].plot(changefreqs, sdataflux, ".")
-# axes[1].plot(changefreqs, fdataflux, ".")
-axes[1].plot(changefreqs, shiftfdataflux, ".")
+axes[1].plot(changefreqs[A], fdataflux[A], ".")
+axes[1].plot(changefreqs[B], fdataflux[B], ".")
+axes[1].plot(changefreqs[C], fdataflux[C], ".")
+axes[1].plot(changefreqs[D], fdataflux[D], ".")
+axes[1].plot(changefreqs[E], fdataflux[E], ".")
 axes[1].set(xlabel = 'Rate of Change in Frequency', ylabel = 'Flux')
 axes[1].legend(['Swift', 'Fermi * slope'])
+
+# plot Fermi data
+fig, axes = plt.subplots(nrows = 2, ncols = 1)
+axes[0].plot(fmidt[A], changefreqs[A], ".")
+axes[0].plot(fmidt[B], changefreqs[B], ".")
+axes[0].plot(fmidt[C], changefreqs[C], ".")
+axes[0].plot(fmidt[D], changefreqs[D], ".")
+axes[0].plot(fmidt[E], changefreqs[E], ".")
+
+axes[1].plot(fmidt[A], fdataflux[A], ".")
+axes[1].plot(fmidt[B], fdataflux[B], ".")
+axes[1].plot(fmidt[C], fdataflux[C], ".")
+axes[1].plot(fmidt[D], fdataflux[D], ".")
+axes[1].plot(fmidt[E], fdataflux[E], ".")
 
 plt.show()
