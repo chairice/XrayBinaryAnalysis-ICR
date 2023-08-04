@@ -83,6 +83,10 @@ midtimes = np.array(midtimes)[isort]
 components = np.array(components)[isort]
         # Plot up the phase angle in cycles vs time
 axes[1].plot(midtimes, np.unwrap(np.angle(components)) / (2 * np.pi), '.')
+
+axes[0].set(xlabel = "Times (s)", ylabel = "Phase (Cycles)")
+axes[0].set_title("Unsorted data")
+axes[1].set(xlabel = "Times (s)", ylabel = "Phase (Cycles)")
 # change in phase; horiz line = no change in freq + freq is correct, diag line = no change in freq + incorrect freq
 # curved line = freq is changing + freq is correct where the tangent of the curved line is horiz (deriv = 0)
 # increase slope toward the right = freq is higher

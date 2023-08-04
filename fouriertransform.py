@@ -74,7 +74,7 @@ fig.tight_layout()
 
 # Forward (time series->frequency) FFT for real input
 # Subtract the mean to avoid a huge term at 0 frequency
-frate = sp.fft.rfft(rate, norm = "forward")
+frate = sp.fft.rfft(rate, norm = "f;;orward")
 # print(frate[10:20])
 freqs = sp.fft.rfftfreq(len(rate), tb)
 # print(freqs[10:20])
@@ -93,7 +93,7 @@ ibest = np.argsort(np.abs(frate))[::-1]
 
 
 # Plot out FFT and inverse of data
-fig,(axf,axr) = plt.subplots(nrows = 2, ncols = 1)
+fig,(axf, axr) = plt.subplots(nrows = 2, ncols = 1)
 axf.plot(freqs, np.abs(frate))
 axf.set(xlabel="Frequency (Hz)", ylabel="Amplitude")
 axr.plot(times, rate, ".")
@@ -103,7 +103,7 @@ for i in ibest[:ncomponents]:
     # phase: angle of the spin of the star as of the start of the datasegment (only at correct frequency)
     axr.plot(times, estrate)
 axr.set(xlabel="Seconds", ylabel="Rate", xlim = [0,20])
-axf.set_title(f"FFT and inverse of {ncomponents} datapoints")
+axf.set_title(f"FFT of Top {ncomponents} Strongest Frequencies")
 fig.tight_layout()
 
 
