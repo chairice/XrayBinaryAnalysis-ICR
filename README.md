@@ -55,3 +55,12 @@ To view the comparison plot between the corrected data and original collected da
 ```
 python3 freqcomparisonplot.py
 ```
+To view the change in phase relative to time and see the accuracy of 0.1018 Hz as the spin frequency, do:
+```
+python3 segmentdft.py
+```
+
+To view the plots determing the relationship and comparing flux and rate of change in spin frequency, do:
+```
+python3 freqvflux.py
+```
